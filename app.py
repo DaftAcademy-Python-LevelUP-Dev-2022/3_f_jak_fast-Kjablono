@@ -1,5 +1,5 @@
 from fastapi import Request, FastAPI, Depends, HTTPException, status, Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
 from fastapi.templating import Jinja2Templates
 
@@ -69,3 +69,36 @@ def info(request: Request, format=None):
         )
 
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Wrong format')
+
+
+# Zadanie 3.4
+paths = set()
+
+
+@app.get('/save/{path}')
+def save_get(path: str):
+    if path not in paths:
+        raise HTTPException(status_code=404)
+    else:
+        return RedirectResponse(url='/info', status_code=status.HTTP_301_MOVED_PERMANENTLY)
+
+
+@app.put('/save/{path}')
+def save_put(path: str):
+    paths.add(path)
+    return Response(status_code=status.HTTP_200_OK)
+
+
+@app.delete('/save/{path}')
+def save_delete(path: str):
+    paths.discard(path)
+    return Response(status_code=status.HTTP_200_OK)
+
+
+@app.post('/save/{path}')
+@app.options('/save/{path}')
+@app.head('/save/{path}')
+@app.trace('/save/{path}')
+@app.patch('/save/{path}')
+def save_other(path: str):
+    return Response(status_code=status.HTTP_400_BAD_REQUEST)
