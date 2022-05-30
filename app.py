@@ -1,4 +1,4 @@
-from fastapi import Request, FastAPI, Depends, HTTPException, status
+from fastapi import Request, FastAPI, Depends, HTTPException, status, Response
 from fastapi.responses import HTMLResponse
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
 from fastapi.templating import Jinja2Templates
@@ -50,4 +50,20 @@ def login(request: Request, credentials: HTTPBasicCredentials = Depends(security
         name='user_age_response.html.j2',
         context={'request': request, 'name': name, 'age': age},
         status_code=status.HTTP_200_OK
+    )
+
+
+# Zadanie 3.3
+@app.get("/info")
+def info(request: Request, format=None):
+    if format.lower() == 'json':
+        return {'user_agent': request.headers.get('User-Agent')}
+
+    elif format.lower() == 'html':
+        return templates.TemplateResponse(
+            name='user_agent_response.html.j2',
+            context={'request': request, 'user_agent': request.headers.get('User-Agent')}
         )
+
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Wrong format')
