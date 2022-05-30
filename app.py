@@ -44,10 +44,10 @@ def login(request: Request, credentials: HTTPBasicCredentials = Depends(security
     age = fetch_user_age(credentials.password)
 
     if age < 16:
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    else:
-        return templates.TemplateResponse(
-            name='user_age_response.html.j2',
-            context={'request': request, 'name': name, 'age': age},
-            status_code=status.HTTP_200_OK
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    return templates.TemplateResponse(
+        name='user_age_response.html.j2',
+        context={'request': request, 'name': name, 'age': age},
+        status_code=status.HTTP_200_OK
         )
