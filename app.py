@@ -39,7 +39,7 @@ def fetch_user_age(birth_date_str: str) -> int:
 
 
 @app.post("/check", response_class=HTMLResponse)
-def login(credentials: HTTPBasicCredentials = Depends(security)):
+def login(request: Request, credentials: HTTPBasicCredentials = Depends(security)):
     name = credentials.username
     age = fetch_user_age(credentials.password)
 
@@ -48,6 +48,6 @@ def login(credentials: HTTPBasicCredentials = Depends(security)):
     else:
         return templates.TemplateResponse(
             name='user_age_response.html.j2',
-            context={'name': name, 'age': age},
+            context={'request': request, 'name': name, 'age': age},
             status_code=status.HTTP_200_OK
         )
