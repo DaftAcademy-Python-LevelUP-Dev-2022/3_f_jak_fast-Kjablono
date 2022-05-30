@@ -1,4 +1,4 @@
-from fastapi import Request, FastAPI, Depends, HTTPException
+from fastapi import Request, FastAPI, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
 from fastapi.templating import Jinja2Templates
@@ -30,20 +30,24 @@ def fetch_user_age(birth_date_str: str) -> int:
     try:
         birth_date = datetime.datetime.strptime(birth_date_str, format="%Y-%m-%d")
     except ValueError:
-        raise HTTPException(status_code=401)
+        raise HTTPException(status_code=status.HTTP_401_BAD_REQUEST)
 
     if birth_date > datetime.datetime.today():
-        raise HTTPException(status_code=401)
+        raise HTTPException(status_code=status.HTTP_401_BAD_REQUEST)
 
     return (datetime.datetime.today() - birth_date).days // 365
 
 
 @app.post("/check", response_class=HTMLResponse)
-def login(request: Request, credentials: HTTPBasicCredentials = Depends(security)):
+def login(credentials: HTTPBasicCredentials = Depends(security)):
     name = credentials.username
     age = fetch_user_age(credentials.password)
 
     if age < 16:
-        return HTTPException(status_code=401)
+        return HTTPException(status_code=status.HTTP_401_BAD_REQUEST)
     else:
-        return templates.TemplateResponse(name='user_age_response.html', context={'name': name, 'age': age})
+        return templates.TemplateResponse(
+            name='user_age_response.html.j2',
+            context={'name': name, 'age': age},
+            status_code=status.HTTP_200_OK
+        )
