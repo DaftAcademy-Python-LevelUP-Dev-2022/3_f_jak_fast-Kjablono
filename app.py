@@ -3,8 +3,9 @@ from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
+
 # Zadanie 3.1
-@app.get("/start")
+@app.get("/start", response_class=HTMLResponse)
 def read_unix_epoch():
     return """
     <html>
