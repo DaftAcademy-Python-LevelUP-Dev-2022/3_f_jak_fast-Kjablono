@@ -28,7 +28,7 @@ def read_unix_epoch():
 # Zadanie 3.2
 def fetch_user_age(birth_date_str: str) -> int:
     try:
-        birth_date = datetime.datetime.strptime(birth_date_str, format="%Y-%m-%d")
+        birth_date = datetime.datetime.strptime(birth_date_str, "%Y-%m-%d")
     except ValueError:
         raise HTTPException(status_code=status.HTTP_401_BAD_REQUEST)
 
@@ -38,7 +38,7 @@ def fetch_user_age(birth_date_str: str) -> int:
     return (datetime.datetime.today() - birth_date).days // 365
 
 
-@app.get("/check", response_class=HTMLResponse)
+@app.post("/check", response_class=HTMLResponse)
 def login(credentials: HTTPBasicCredentials = Depends(security)):
     name = credentials.username
     age = fetch_user_age(credentials.password)
