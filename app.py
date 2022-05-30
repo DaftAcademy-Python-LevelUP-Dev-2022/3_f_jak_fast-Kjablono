@@ -13,7 +13,16 @@ templates = Jinja2Templates(directory="templates")
 # Zadanie 3.1
 @app.get("/start", response_class=HTMLResponse)
 def read_unix_epoch():
-    return templates.TemplateResponse(name='start.html', context=dict())
+    return """
+    <html>
+        <head>
+            <title>HTML</title>
+        </head>
+        <body>
+            <h1>The unix epoch started at 1970-01-01</h1>
+        </body>
+    </html>
+"""
 
 
 # Zadanie 3.2
