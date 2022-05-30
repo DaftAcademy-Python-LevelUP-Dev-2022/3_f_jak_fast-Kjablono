@@ -30,10 +30,10 @@ def fetch_user_age(birth_date_str: str) -> int:
     try:
         birth_date = datetime.datetime.strptime(birth_date_str, "%Y-%m-%d")
     except ValueError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        return -1
 
     if birth_date > datetime.datetime.today():
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        return -1
 
     return (datetime.datetime.today() - birth_date).days // 365
 
