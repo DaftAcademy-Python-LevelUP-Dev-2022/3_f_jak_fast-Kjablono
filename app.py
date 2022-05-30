@@ -38,7 +38,7 @@ def fetch_user_age(birth_date_str: str) -> int:
     return (datetime.datetime.today() - birth_date).days // 365
 
 
-@app.post("/check", response_class=HTMLResponse)
+@app.get("/check", response_class=HTMLResponse)
 def login(credentials: HTTPBasicCredentials = Depends(security)):
     name = credentials.username
     age = fetch_user_age(credentials.password)
